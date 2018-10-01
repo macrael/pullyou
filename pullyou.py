@@ -62,7 +62,7 @@ def open_url(url):
     webbrowser.open(url)
 
 
-if __name__ == '__main__':
+def main():
     args = parser().parse_args()
     if args.repo is None:
         args.repo = current_repo()
@@ -78,3 +78,7 @@ if __name__ == '__main__':
 
     # print(web_url)
     open_url(web_url)
+
+
+if __name__ == '__main__':
+    main()
