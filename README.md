@@ -1,5 +1,12 @@
 PullYou is a tool for opening the PR associated with a given git hash.
 
+Install
+--------
+```
+pip3 install pullyou
+```
+
+
 Usage
 --------
 ```
