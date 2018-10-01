@@ -12,7 +12,7 @@ with open(path.join(here, 'README.md'), encoding='utf-8') as f:
 
 setup(
     name='pullyou',
-    version='1.0.1',
+    version='1.0.2',
     description='A tool for opening the PR associated with a given commit',
     long_description=long_description,
     url='https://github.com/macrael/pullyou',
