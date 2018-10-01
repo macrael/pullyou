@@ -1,6 +1,6 @@
-* hit the github issues API, searching for the hash passed in
-* by default, search the repo that you are in
-* by default, call open and show it in the browser
+x hit the github issues API, searching for the hash passed in
+x by default, search the repo that you are in
+x by default, call open and show it in the browser
 * release it
 
 2.0

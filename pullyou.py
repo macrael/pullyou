@@ -1,5 +1,6 @@
 import argparse
 import json
+import re
 import requests
 import subprocess
 import sys
@@ -16,7 +17,6 @@ def parser():
 
 # Searches the GitHub API for a PR that matches the given git hash and project
 def search_for_hash(git_hash, git_repo):
-    print("EARCHING: ", git_hash, git_repo)
     search_params = {'repo': git_repo}
     search_param_strings = []
     for key, value in search_params.items():
@@ -39,15 +39,22 @@ def search_for_hash(git_hash, git_repo):
     pull_request = search_response['items'][0]
 
     web_url = pull_request['html_url']
-    print(web_url)
     return web_url
 
 
 def current_repo():
     git_remote_args = ['git', 'remote', '-v']
-    git_remote_out = subprocess.run(git_remote_args, capture_output=True)
-    print(git_remote_out)
+    git_remote = subprocess.run(git_remote_args, capture_output=True)
+    git_remote_out = git_remote.stdout.decode('utf-8')
 
+    remote_url_regex = r'^origin\s+.*github\.com:([^.]*)(.git)?\s+\(fetch\)$'
+    re_result = re.search(remote_url_regex, git_remote_out, flags=re.MULTILINE)
+
+    if re_result is None:
+        return None
+
+    remote_url = re_result.group(1)
+    return remote_url
 
 
 # open_url opens the given url in the default browser
@@ -56,17 +63,18 @@ def open_url(url):
 
 
 if __name__ == '__main__':
-    print("Hello PullYou")
-
     args = parser().parse_args()
-    print(args)
-    if args.repo == None:
-        print('lookuprepo')
+    if args.repo is None:
         args.repo = current_repo()
-
-    sys.exit(1)
+    if args.repo is None:
+        print("No repo was specified, nor was one with a valid origin found in the current directory. Please specify with --repo or search from a git repo.")
+        sys.exit(1)
 
     # 5bb3d053afcf0d83
-    web_url = search_for_hash('5bb3d053afcf0d83', 'transcom/mymove')
-    print(web_url)
-    # open_url(web_url)
+    web_url = search_for_hash(args.git_hash, args.repo)
+    if web_url is None:
+        print('No PR found for the given hash.')
+        sys.exit(1)
+
+    # print(web_url)
+    open_url(web_url)
