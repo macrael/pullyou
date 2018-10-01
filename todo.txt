@@ -1,0 +1,8 @@
+* hit the github issues API, searching for the hash passed in
+* by default, search the repo that you are in
+* by default, call open and show it in the browser
+* release it
+
+2.0
+* more options
+* show you the commit in your directory
