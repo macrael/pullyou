@@ -4,5 +4,6 @@ x by default, call open and show it in the browser
 x release it
 
 2.0
+* deal with finding more than one PR, print both urls or something
 * more options
 * show you the commit in your directory
