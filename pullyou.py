@@ -5,7 +5,7 @@ import requests
 import subprocess
 import sys
 import webbrowser
-
+import os
 
 def parser():
     parser = argparse.ArgumentParser(description='Open the PR associated with a given commit.')
@@ -14,6 +14,19 @@ def parser():
 
     return parser
 
+def read_auth():
+    cred_file = "~/.github_token"
+    full_path = os.path.expanduser(cred_file)
+    if not os.path.exists(full_path):
+        return None
+
+    with open(full_path) as f:
+        creds = f.read().strip().split(":")
+        if len(creds) != 2:
+            print('Error: It appears your github access token file is not formatted correctly.')
+            print('pullyou expects `username:token`')
+            return None
+        return (creds[0], creds[1])
 
 # Searches the GitHub API for a PR that matches the given git hash and project
 def search_for_hash(git_hash, git_repo):
@@ -26,7 +39,20 @@ def search_for_hash(git_hash, git_repo):
 
     query_params = {'q': search}
     pr_search_url = 'https://api.github.com/search/issues'
-    http_response = requests.get(pr_search_url, params=query_params)
+
+    github_auth = read_auth()
+
+    http_response = requests.get(pr_search_url, params=query_params, auth=github_auth)
+
+    code = http_response.status_code
+    if code != 200:
+        if code == 422:
+            print(f'The git repo ({git_repo}) you have attempted to search for either does not exist on github or you do not have access to it.')
+            print('To configure access, drop your username and a github personal access token in ~/.github_token')
+            print('format: username:token')
+            return None
+        print(f"Received Error Code: {code}\n{http_response.text}")
+        return None
 
     search_response = json.loads(http_response.text)
 

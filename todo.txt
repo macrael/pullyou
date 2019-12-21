@@ -2,6 +2,7 @@ x hit the github issues API, searching for the hash passed in
 x by default, search the repo that you are in
 x by default, call open and show it in the browser
 x release it
+x access private repositories
 
 2.0
 * deal with finding more than one PR, print both urls or something
